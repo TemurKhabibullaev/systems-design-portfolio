@@ -29,14 +29,12 @@ Supported algorithms:
 - Token Bucket
 - Sliding Window
 
-Algorithm selection is runtime-configurable via environment variables, allowing:
+Algorithm selection is runtime-configurable via environment variables, which allows:
 
 - Controlled A/B testing
 - Behavioral tuning per deployment
 - Infrastructure-level experimentation
 - Zero rebuild required for switching strategy
-
-The limiter is implemented behind a common interface abstraction to support extensibility without affecting the control-plane layer.
 
 ---
 
@@ -94,15 +92,6 @@ Why this matters:
 
 ### Concurrency Model
 
-The implementation is fully concurrency-safe.
-
-Key characteristics:
-
-- Shared state protected by synchronization primitives
-- Minimal critical section size
-- Deterministic map lookups
-- No lock inside algorithm math operations
-
 Current design is optimized for correctness and bounded latency.
 
 Future optimization path:
@@ -126,12 +115,9 @@ The service exposes Prometheus metrics at `/metrics`.
 
 Design considerations:
 
-- Metrics observation occurs outside hot algorithm math
+- Metrics observation happens outside the algorithm math
 - Histogram buckets use default bounded distribution
-- Label cardinality minimized to prevent explosion
-- Observability overhead kept negligible relative to decision latency
-
-This enables full production visibility without corrupting performance.
+- Label cardinality minimized
 
 ---
 
@@ -153,8 +139,6 @@ Benchmark goals:
 - Measure ns/op latency
 - Identify contention characteristics
 - Ensure algorithm parity comparison
-
-This establishes deterministic regression detection for future iterations.
 
 ---
 
@@ -204,9 +188,6 @@ Identified risks:
 Mitigations:
 
 - Key TTL policies (future extension)
-- Cardinality monitoring
-- Minimal label strategy
-- Time abstraction for deterministic testing
 
 ---
 
@@ -222,13 +203,11 @@ This project intentionally demonstrates:
 - Production containerization standards
 - CI-integrated validation
 
-It bridges traditional SRE reliability engineering with low-latency systems thinking.
-
 ---
 
 ## Future Extension Path
 
-Planned evolution areas:
+Planned improvement areas:
 
 - Sharded internal state map
 - Distributed Redis-backed limiter
@@ -241,7 +220,7 @@ Planned evolution areas:
 
 ## Summary
 
-This limiter is not a toy example. It represents a production-style control-plane service built with explicit focus on:
+This limiter represents a production-style control-plane service built with focus on:
 
 - Deterministic performance
 - Concurrency safety
