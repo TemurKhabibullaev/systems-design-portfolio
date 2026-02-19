@@ -19,6 +19,23 @@ Primary design goals:
 The system simulates characteristics found in real-world control-plane or trading-infrastructure services where performance regressions, allocation spikes, or contention issues directly impact reliability.
 
 ---
+## System Architecture
+
+```mermaid
+flowchart LR
+    Client -->|HTTP Request| API["HTTP Layer\n(net/http)"]
+
+    API --> Strategy["Limiter Interface\n(strategy pattern)"]
+
+    Strategy --> TB["Token Bucket"]
+    Strategy --> SW["Sliding Window"]
+
+    TB --> Decision
+    SW --> Decision
+
+    Decision -->|Response| Client
+    API -->|Instrumentation| Metrics["Prometheus\nCounters + Histogram"]
+```
 
 ## Functional Capabilities
 
